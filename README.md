@@ -4,6 +4,7 @@ This project simulates the combustion process in a combustion chamber of a Jet-e
 chemical kinetics and the Crank-Nicolson numerical method.
 
 📌 Goal: Solve the 2D coupled system of partial diferential equations (energy and species equations) to describe temperature and chemical species variations during injection and during the combustion process. 
+
 🔧 Language: Python  
 📚 Libraries: NumPy, Scipy, Matplotlib  
 🧪 Applications: Thermal behavior and Air-Fuel consuption in jet engines (TCC - Undergraduate Thesis-Applied Mathematics)
