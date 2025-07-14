@@ -1,8 +1,8 @@
 """
 @author: Gerson Joao Timbe
 
-Script to simulate the combustion Process in a combustion chamber of a jet engine (assumptions a made) 
-The main Goal is to ilustrate the temperature and air+fuel mixture variations inside the chamber
+Script to simulate the combustion process in a combustion chamber of a jet engine (Some assumptions were made). 
+The main goal is to ilustrate temperature and air-fuel injection and consumption variations inside the chamber.
 """
 
 import numpy as np
