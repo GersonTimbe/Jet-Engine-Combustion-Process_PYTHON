@@ -8,8 +8,8 @@ fig, ax = plt.subplots(figsize=(6, 4))
 
 # vertex of the chamber
 x = np.array([0, 0.3, 0.3, 4.7, 4.7, 5])  
-y1 = np.array([(Ly-2)/3, (Ly-2)/3, 0, 0, (Ly-2)/3, (Ly-2)/3])  # Parte inferior
-y2 = np.array([2*(Ly-2)/3, 2*(Ly-2)/3, Ly-2, Ly-2, 2*(Ly-2)/3, 2*(Ly-2)/3])  # Parte superior
+y1 = np.array([(Ly-2)/3, (Ly-2)/3, 0, 0, (Ly-2)/3, (Ly-2)/3])  #lower boundary
+y2 = np.array([2*(Ly-2)/3, 2*(Ly-2)/3, Ly-2, Ly-2, 2*(Ly-2)/3, 2*(Ly-2)/3])  # upper boundary
 
 ax.plot(x, y1, 'k', linewidth=3)
 ax.plot(x, y2, 'k', linewidth=3)
@@ -30,7 +30,7 @@ ax.arrow(-1.8, (Ly-2)/2, 1.5, 0, head_width=0.2, head_length=0.2, fc='black', ec
 ax.text(-1.5, (Ly-2)/2 + 0.4, "Entry", fontsize=8, color='black')
 ax.text(-1.8, (Ly-2)/2 - 0.4, "Air + Fuel", fontsize=8, color='black')
 
-# Ponto de ignição 
+# Ignition Center 
 ax.scatter(1.3, (Ly-2)/2, s=30, facecolors='red', edgecolors='red', linewidths=2, label="Ignition Point" )
 
 #Lx
@@ -44,16 +44,16 @@ ax.annotate("", xy=(5.4, (Ly-1)-0.93), xytext=(5.4 , -0.07),
 ax.text(Lx-0.5, (Ly-2)/2, r"$L_y$", fontsize=12, va="center")
 
 
-# Ajustando limites do gráfico
+# Ajusting figure limits
 ax.set_xlim(-0.2, 1.2)
 ax.set_ylim(-0.2, 1.2)
 
-# Ajustes finais
+# final
 ax.set_xlim(-2, 6)
 ax.set_ylim(-2, 4)
 ax.set_xticks([])
 ax.set_yticks([])
 ax.axis('off')
-# Exibir o gráfico
+# show figure
 plt.legend(loc="upper left")
 plt.show()
