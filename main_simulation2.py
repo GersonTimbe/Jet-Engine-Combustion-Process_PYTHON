@@ -11,6 +11,7 @@ import numpy as np
 import scipy
 import matplotlib
 import os
+import gc
 
 
 #I. COEFFICIENTS OF THE MESH AND TIME STEP
@@ -29,29 +30,29 @@ x, y = np.meshgrid(x, y)
 
 
 #II. PARAMETERS
-#Fluid Dynamic PARAMETERS ajusted to avaid instabilities
-rho  = 1     
+#Fluid Mechanics PARAMETERS ajusted to avoid instabilities: more accurate parameters demand a longer simulation time (more than 20h in a normal computer)
+rho  = 1              
 Cp   = 1000    
 kT   = 2000    
-alpha = kT/(rho*Cp)
+alpha = kT/(rho*Cp)                 #diffusity
 
 #Constant Velocity field
 u_x = 15       
 u_y = 0.0     
 
 # Parameters for species transport:  Fuel C10H22(n-decane) and O_2
-MW_fuel = 0.142       
-MW_O2   = 0.032      
-S_ratio = 15.5*(MW_O2/MW_fuel)  
+MW_fuel = 0.142                     # fuel molar weight
+MW_O2   = 0.032                     # oxidizer molar weight
+S_ratio = 15.5*(MW_O2/MW_fuel)      # equivalence ratio
 Phi     = 1            
-Ae      = 10**8       
-E_a     = 147000     
-R       = 8.314       
-Delta_H =-6345000     
-D_fuelx = 2           
-D_Ox    = 2
-D_fuely = 1
-D_Oy =1
+Ae      = 10**8                   #|parameters of th erenhius model
+E_a     = 147000                  #|    
+R       = 8.314                   #| 
+Delta_H =-6345000                 # combustion entalphy 
+D_fuelx = 2                       #|Diffusion constants
+D_Ox    = 2                       #|
+D_fuely = 1                       #|
+D_Oy =1                           #|
 K       = np.zeros((Ny, Nx))  
 
 
@@ -61,7 +62,7 @@ hi = 10**6
 hd = 200                                        
 hs = 10**6                              
 Te = 800   
-Tenv = 320    #(Temperature of the environment)
+Tenv = 320                         #Temperature of the environment
 
 #auxiliaries
 Ce = 1+(he/kT)*delta_x
@@ -176,12 +177,13 @@ def filling_matrixes_f(A_f, M_f, T, YO, D_fuelx,D_fuely, u_x):
         Smxf = Dfx + 0*Cfx  
         Sbyf = Dfy - Cfy  
         Smyf = Dfy + Cfy  
-
+        
+        #Coefficients for fuel equation(2)
         r_ij_fuel = ((Dt )/(2*rho))*K[i,j]*(rho**2/(MW_O2))*YO[i,j] 
         a_fij = 1 + 2 * Dfx + 2 * Dfy - Cfx +r_ij_fuel
         b_fij = 1 - 2 * Dfx - 2 * Dfy + Cfy -r_ij_fuel
 
-        # Fuel injection limits
+        # Fuel injection (as part of the mixture)
         i_min = max(1, int(round(Ny / 3)) -1)          
         i_max = min(Ny - 2, int(round(2 * Ny / 3))+1 ) 
 
@@ -363,6 +365,7 @@ def apply_boundries_conditions_T(T):
             T[:,-1] = Kd + (1/Cd)*T[i,-2]  
             T[-1,:] = Ks + (1/Cs)*T[-2,:]  
     return T
+
 
 #3.MODELING THE SOURCE TERM Q (Heat Generation)
 
@@ -570,6 +573,7 @@ for t in range(0,Nt):
 
             A_f = np.zeros((Ni, Ni))
             M_f = np.zeros((Ni, Ni))
+
             #convection manually decreased until 0 to reactants as they are  consumed
             if step<400:
                 filling_matrixes_f(A_f,M_f,T, YO, D_fuelx, D_fuely, u_x) 
@@ -644,11 +648,11 @@ for t in range(0,Nt):
             if (Yffraction_reached_in_ignition_region >= Yf_critical and YOfraction_reached_in_ignition_region >= YO_critical) or combustion_started:   
                 combustion_started = True
                 print(f"Time step {t}: Yf_fraction reached in the ignition region(%) = {np.round(Yffraction_reached_in_ignition_region,4)}, YOfraction reached in the ignition region (%) = {np.round(YOfraction_reached_in_ignition_region,4)}, Solve energy equation?  = {combustion_started}")
-                print(f"Time step {t}: Yf_fraction reached total(%) = {np.round(Yffraction_reached_total,4)}, YOfraction reached total(%) = {np.round(YOfraction_reached_total,4)} Solve energy equation? = {combustion_started}")       
+                print(f"Time step {t}: Yf_fraction reached total(%) = {np.round(Yffraction_reached_total,4)}, YO_fraction reached total(%) = {np.round(YOfraction_reached_total,4)} Solve energy equation? = {combustion_started}")       
             else:
                 combustion_started = False
-                print(f"Time step {t}: Yffraction reached(%) = {np.round(Yffraction_reached_in_ignition_region,4)}, YOfraction reached(%) = {np.round(YOfraction_reached_in_ignition_region,4)}, Solve energy equation? = {combustion_started}")
-                print(f"Time step {t}: Yffraction reached total(%) = {np.round(Yffraction_reached_total,4)}, YOfraction reached total(%) = {np.round(YOfraction_reached_total,4)} Solve energy equation = {combustion_started}")
+                print(f"Time step {t}: Yf_fraction reached(%) = {np.round(Yffraction_reached_in_ignition_region,4)}, YO_fraction reached(%) = {np.round(YOfraction_reached_in_ignition_region,4)}, Solve energy equation? = {combustion_started}")
+                print(f"Time step {t}: Yf_fraction reached total(%) = {np.round(Yffraction_reached_total,4)}, YO_fraction reached total(%) = {np.round(YOfraction_reached_total,4)}, Solve energy equation? = {combustion_started}")
         
         #4.2.6 Ignite, Update the source term Q and Solve  A·T[n+1] = M·T[n] + Q for T at time n+1.
         if combustion_started:
@@ -839,7 +843,6 @@ for t in range(0,Nt):
         plt.suptitle(f"Time step: {step}")
 
     #4.6 DISPAYING AND STORING IMAGES (To further use)
-    import os
     if t%5==0 or t in [187,186,189]:
         os.makedirs(f"Simulation2_images",exist_ok=True)
         plt.savefig(f"Simulation2_images/simulation_step_{step:04d}.png",dpi=150,bbox_inches='tight')
@@ -847,9 +850,9 @@ for t in range(0,Nt):
         plt.close()
         plt.show()
     plt.close()
+
     #4.7 CLEANING MEMORY
     #clean RAM space to each 50th time step (if necessary)
-    import gc
     if t%50==0:
         gc.collect()
     if step >0:
@@ -858,14 +861,16 @@ for t in range(0,Nt):
         del A_O
         del M_O
 
-# 5 SAVE THE T, Yf AND Yo DATA ARRAYS AS CSV (to further analysis)
-
+# 5 SAVE THE T, Yf AND Yo DATA ARRAYS AS CSV (for further analysis)
 np.savetxt("simulation2_data.csv",
         np.column_stack([time_steps, T_mean_list, Yf_mean_list, YO_mean_list, Ymist_mean_ignition_list]),
         delimiter=",",
         header="Time,T_mean,Yf_mean,YO_mean,Ymist_mean_ignition",
         comments='')
 
-np.savez("data_simulation3.npz", Yf_list=Yfs, YO_list=YOs, T_list=Ts,Ymist_list=Ymists)
+np.savez("simulation2_data.npz", Yf_list=Yfs, YO_list=YOs, T_list=Ts,Ymist_list=Ymists)
+
+
+
 
 
