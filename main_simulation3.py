@@ -3,11 +3,19 @@
 
 Script to simulate the combustion Process in a combustion chamber of a jet engine (assumptions a made) 
 The main goal is to ilustrate the temperature and air-fuel injection and consumption variations
+
+Simulation2
 """
 
 import numpy as np
+import numpy as np
+import scipy
+import matplotlib
+import os
+import gc
 
-#3.COEFFICIENTS of the Mesh and time step
+
+#I. COEFFICIENTS OF THE MESH AND TIME STEP
 Lx, Ly = 0.6, 0.3       
 delta_x = 0.6/70      
 delta_y = 0.3/35      
@@ -22,14 +30,15 @@ y = np.linspace(0, Ly, Ny)
 x, y = np.meshgrid(x, y)
 
 
-#4.Parameters
-#Fluid Mecanics PARAMETERS ajusted to avaid instabilities
+#II. PARAMETERS
+#Fluid Mechanics PARAMETERS ajusted to avoid instabilities
+#more accurate parameters demand a longer simulation time (more than 20h in a normal computer)
 rho = 1            
 Cp  = 1000         
 kT   = 350         
-alpha = kT/(rho*Cp)
+alpha = kT/(rho*Cp)                #diffusity
 
-#variable velocity field  v=(v_x,v_y)
+#Variable Velocity field  v=(v_x,v_y)
 vx_max = 25       
 vy_max = vx_max/5
 A = 1.7
@@ -41,18 +50,18 @@ max_V_magnitude =20
 
 
 # Parameters for species transport:  Fuel C10H22(n-decane) and O_2
-MW_fuel = 0.142       
-MW_O2   = 0.032       
-S_ratio = 15.5*(MW_O2/MW_fuel)  
+MW_fuel = 0.142                  # fuel molar weight
+MW_O2   = 0.032                  # fuel molar weight       
+S_ratio = 15.5*(MW_O2/MW_fuel)   # equivalence ratio
 Phi     = 1              
-Ae      = 10**8       
-E_a     = 147000     
-R       = 8.314      
-Delta_H =-6345000     
-D_fuelx = 0.35      
-D_Ox    = 0.35
-D_fuely = 0.17
-D_Oy =0.17
+Ae      = 10**8                  #|parameters of th erenhius model     
+E_a     = 147000                 #|  
+R       = 8.314                  #|  
+Delta_H =-6345000                # combustion entalphy 
+D_fuelx = 0.35                   #|Difusion constants 
+D_Ox    = 0.35                   #|      
+D_fuely = 0.17                   #|
+D_Oy =0.17                       #|
 K       = np.zeros((Ny, Nx))    
 
 
@@ -62,7 +71,7 @@ hi = 10**6
 hd = 200   
 hs = 10**6  
 Te = 800  
-Tenv = 320
+Tenv = 320                       #Temperature of the environment
 
 #auxiliaries
 Ce = 1+(he/kT)*delta_x
@@ -77,7 +86,7 @@ mfr_fuel = 1
 mfr_O = (1/Phi)*S_ratio*mfr_fuel 
 
 
-#5. First step: Construct the matrices of the system of equations (const. velocity)
+#1. CONSTRUCT THE MATRICES OF THE SYSTEM OF EQUATIONS.
 A = np.zeros((Ni, Ni))
 M = np.zeros((Ni, Ni))
 
@@ -265,7 +274,7 @@ def filling_matrixes_O(A_O,M_O,T, Yf,v_x,v_y):
             M_O[k, k+1] =  SmxO
 
 
-# 6.Step 2: Functions for Initial and Boundary Conditions (Species and Energy)
+# 2. FUNCTIONS FOR INITIAL  AND BOUNDARY CONDITIONS (Species and Energy)
 def define_initial_conditions_Yf():
     Yf_initial= np.zeros((Ny, Nx))
     return Yf_initial
@@ -356,7 +365,7 @@ def apply_boundries_conditions_T(T):
     return T
 
 
-#7. Step 3: Modelate the source term Q (Heat Generation)
+#3.MODELING THE SOURCE TERM Q (Heat Generation)
 def modelate_source_term_Q(Yf, YO, Temp):
     #Modeling terms to be added in Q (BCs_Term)
     BCs_Term = np.zeros((Ny, Nx))
@@ -455,10 +464,9 @@ for k in range(Ni):
         BCs_Term_O[i, j] = 0
 
 
-#8. Step 4: Solve the coupled system for f and energy in the same loop
+#. 4 SOLVE THE COUPLED SYSTEM FOR SPECIES (Yf, Yo) AND ENERGY (T) IN THE SAME LOOP
 
 mPex = max_V_magnitude*Lx/D_fuelx          #peclet number for mass diffusion
-
 tPex = max_V_magnitude*Lx/alpha            #peclet number for termal diffusion
 
 from scipy.sparse import csc_matrix
@@ -472,6 +480,7 @@ Ts = []
 ignition_triggered = False 
 combustion_started = False 
 
+# Initializing lists to store T and Y arrays in the time step loop
 T_mean_list  = []
 Yf_mean_list = []
 YO_mean_list = []
@@ -483,6 +492,7 @@ for t in range(0,Nt):
     step = t
     print(f'step ={step}')
 
+    #4.1
     if step == 0:
         # Initialize fuel fraction and temperature matrices
         Yf = define_initial_conditions_Yf()
@@ -497,22 +507,23 @@ for t in range(0,Nt):
         T = T_initial
         filling_matrixes_temperature(v_x,v_y)
         BCs_Term, Q = modelate_source_term_Q(Yf, YO, T) 
- 
+    #4.2
     else:
         ## Solve: Fuel and oxidezer injection kept or stopped
+        #4.2.1
         if not combustion_started:                                    
-            #1a  Solve  A_f·Yf[n+1] = M_f·Yf[n] for Yf at time n+1
+            #1A  Solve  A_f·Yf[n+1] = M_f·Yf[n] for Yf at time n+1
             Yf_n = Yf
-            #1.1 converting matrixes into sparse form
+            # converting matrixes into sparse form
             A_f = np.zeros((Ni, Ni))
             M_f = np.zeros((Ni, Ni))
             filling_matrixes_f(A_f,M_f,T, YO, v_x,v_y)
             A_f_sparse = csc_matrix(A_f)
             M_f_sparse = csc_matrix(M_f)
-            #1.2 convert internal values to vector form
+            # convert internal values to vector form
             Yfn_vect = Yf[1:-1, 1:-1].reshape(Ni)
             BCs_Term_fuel_n_vect =  BCs_Term_fuel[1:-1, 1:-1].reshape(Ni)
-            #1.3 solve
+            # solve
             b_f = M_f_sparse @ Yfn_vect +  BCs_Term_fuel_n_vect
             Yfnext = spsolve(A_f_sparse, b_f)
             Yf[1:-1, 1:-1] = Yfnext.reshape(Ny-2, Nx-2)
@@ -521,18 +532,18 @@ for t in range(0,Nt):
             Yf = np.minimum(Yf, 1)
             Yf_n1= Yf
 
-            #2a Solve  A_O·Y[n+1] = M_O·Y[n] for YO at time n+1
-            #2.1 converting matrixes into sparse form
+            #1B Solve  A_O·Y[n+1] = M_O·Y[n] for YO at time n+1
+            # converting matrixes into sparse form
             YO_n = YO
             A_O = np.zeros((Ni, Ni))
             M_O = np.zeros((Ni, Ni))
             filling_matrixes_O(A_O,M_O,T, Yf, v_x,v_y)
             A_O_sparse = csc_matrix(A_O)
             M_O_sparse = csc_matrix(M_O)
-            #2.2 convert internal values to vector form
+            # convert internal values to vector form
             YOn_vect = YO[1:-1, 1:-1].reshape(Ni)
             BCs_Term_O_n_vect =  BCs_Term_O[1:-1, 1:-1].reshape(Ni)
-            #2.3 solve
+            # solve
             b_O = M_O_sparse @ YOn_vect +  BCs_Term_O_n_vect
             YOnext = spsolve(A_O_sparse, b_O)
             YO[1:-1, 1:-1] = YOnext.reshape(Ny-2, Nx-2)
@@ -541,15 +552,15 @@ for t in range(0,Nt):
             YO = np.minimum(YO, 1)
             YO_n1 = YO
 
-            #3a Temperature
-            #3.1 Temperature variaton due to hot gas injection
+            #1C Temperature
+            # Temperature variaton due to hot gas injection
             a=235.6       
             Tmisture = T_initial + (800-a)*Yf*np.ones((Ny,Nx)) + (800-a)*YO*np.ones((Ny,Nx))
             T = Tmisture
-
+        #4.2.2
         else:                                                     
-            #1b Solve  A_f·Yf[n+1] = M_f·Yf[n] for Yf at time n+1
-            #1.1 converting matrixes into sparse form
+            #2A Solve  A_f·Yf[n+1] = M_f·Yf[n] for Yf at time n+1
+            # converting matrixes into sparse form
             Yf_n = Yf
             Yf_n = np.maximum(Yf_n, 0)
             Yf_n = np.minimum(Yf_n, 1)
@@ -568,9 +579,9 @@ for t in range(0,Nt):
                  filling_matrixes_f(A_f,M_f,T, YO,0*v_x,0*v_y) 
             A_f_sparse = csc_matrix(A_f)
             M_f_sparse = csc_matrix(M_f)
-            #1.2 convert internal values to vector form
+            # convert internal values to vector form
             Yfn_vect = Yf[1:-1, 1:-1].reshape(Ni)
-            #1.3 solve:
+            # solve:
             b_f = M_f_sparse @ Yfn_vect  
             Yfnext = spsolve(A_f_sparse, b_f)
             Yf[1:-1, 1:-1] = Yfnext.reshape(Ny-2, Nx-2)
@@ -580,7 +591,7 @@ for t in range(0,Nt):
             Yf_n1= Yf
             print(f'Yf_{t}')
 
-            #2b Solve  A_O·Y[n+1] = M_O·Y[n] for YO at time n+1
+            #2B Solve  A_O·Y[n+1] = M_O·Y[n] for YO at time n+1
             #2.1 converting matrixes into sparse form
             YO_n = YO
             YO_n = np.maximum(YO_n, 0)
@@ -611,16 +622,14 @@ for t in range(0,Nt):
             YO = np.minimum(YO, 1)
             YO = S_ratio*YO
             YO_n1 = YO
-            print(f'YO_{t}')
 
-        Ymist= Yf+YO
-        print(f'Ymist_{t}')
+        Ymist= Yf+YO                                        #fraction of the mixture defined as the sum of fuel and oxidizer fractions 
 
-        #3b Location, Parameters and conditions to start combustion
-        #3.1 Critical fraction of fuel and oxidizer in the ignition region to activate the resolution of energy equation
+        #4.2.3 Location, Parameters and conditions to start combustion
+        # IGNITION CONDITION: Critical fraction of fuel and oxidizer in the ignition region to activate the resolution of energy equation
         Yf_critical = 0.062    
         YO_critical = 0.222
-        # 3.2 Ignation Region
+        # Ignation Region
         j_igmin = int(np.round(Nx/9)-1)
         j_igmax = int(np.round(2*Nx/9)+1)
         i_igmin = int(np.round(4*Ny/9)-2)
@@ -629,37 +638,37 @@ for t in range(0,Nt):
         Yf_in_ignition = Yf[ignition_region]
         YO_in_ignition = YO[ignition_region]
 
-        # 3.3 Fuel  and oxidizer Avarage fraction in the ignition region and inside the chamber
+        #4.2.4 Fuel  and oxidizer Avarage fraction in the ignition region and inside the chamber
         Yffraction_reached_in_ignition_region = np.mean(Yf_in_ignition)  
         YOfraction_reached_in_ignition_region = np.mean(YO_in_ignition)
         Yffraction_reached_total = np.mean(Yf)        
         YOfraction_reached_total = np.mean(YO)
 
-        #3.4 conditions ignite the spark: "combustion_started" defines when combustion begins.
+        #4.2.5 conditions ignite the spark: "combustion_started" defines when combustion begins.
         if t>=2:
             if (Yffraction_reached_in_ignition_region >= Yf_critical and YOfraction_reached_in_ignition_region >= YO_critical) or combustion_started:   
                 combustion_started = True
-                print(f"Time step {t}: Yffraction reached(%) = {np.round(Yffraction_reached_in_ignition_region,4)}, YOfraction reached(%) = {np.round(YOfraction_reached_in_ignition_region,4)} Solve energy = {combustion_started}")
-                print(f"Time step {t}: Yffraction reached total(%) = {np.round(Yffraction_reached_total,4)}, YOfraction reached total(%) = {np.round(YOfraction_reached_total,4)} Solve energy = {combustion_started}")       
+                print(f"Time step {t}: Yf_fraction reached(%) = {np.round(Yffraction_reached_in_ignition_region,4)}, YO_fraction reached(%) = {np.round(YOfraction_reached_in_ignition_region,4)}, Solve energy equation?= {combustion_started}")
+                print(f"Time step {t}: Yf_fraction reached total(%) = {np.round(Yffraction_reached_total,4)}, YO_fraction reached total(%) = {np.round(YOfraction_reached_total,4)}, Solve energy equation?= {combustion_started}")       
             else:
                 combustion_started = False
-                print(f"Time step {t}: Yffraction reached(%) = {np.round(Yffraction_reached_in_ignition_region,4)}, YOfraction reached(%) = {np.round(YOfraction_reached_in_ignition_region,4)} Solve energy = {combustion_started}")
-                print(f"Time step {t}: Yffraction reached total(%) = {np.round(Yffraction_reached_total,4)}, YOfraction reached total(%) = {np.round(YOfraction_reached_total,4)} Solve energy = {combustion_started}")
+                print(f"Time step {t}: Yf_fraction reached(%) = {np.round(Yffraction_reached_in_ignition_region,4)}, YO_fraction reached(%) = {np.round(YOfraction_reached_in_ignition_region,4)}, Solve energy equation? = {combustion_started}")
+                print(f"Time step {t}: Yf_fraction reached total(%) = {np.round(Yffraction_reached_total,4)}, YO_fraction reached total(%) = {np.round(YOfraction_reached_total,4)}, Solve energy equation?= {combustion_started}")
         
-        #4.3 Ignite, Update the source term Q and Solve  A·T[n+1] = M·T[n] + Q for T at time n+1.
+        #4.2.6 Ignite, Update the source term Q and Solve  A·T[n+1] = M·T[n] + Q for T at time n+1.
         if combustion_started:
-            #4.3.1 Trigger ignition
+            # Trigger ignition
             if not ignition_triggered:
                 #Modeling the spark inition
                 T = Tmisture + T_ignition       
                 print(f'T_ignition{t}')
                 ignition_triggered = True
             else:
-                #4.3.2 Update the source term Q
+                # Update the source term Q
                 BCs_Term, Q = modelate_source_term_Q(Yf_n, YO_n, T)
                 print(f'Q_{t}')
 
-                #4.3.3 Updadte T solving energy equation
+                # Updadte T solving energy equation
                 # converting matrixes into sparse form
                 A_sparse  = csc_matrix(A)      
                 M_sparse  = csc_matrix(M)
@@ -675,7 +684,7 @@ for t in range(0,Nt):
                 T = np.minimum(T, 3000)
                 print(f'T_{t}')
 
-    #5 Store values to plotting later
+    #4.3 STORE VALUES TO PLOT LATER
     Yfs.append(np.copy(Yf))
     YOs.append(np.copy(YO))
     Ymists.append(np.copy(Ymist))
@@ -701,7 +710,7 @@ for t in range(0,Nt):
     Ymist_mean_ignition_list.append(Ymist_mean_ignition)
 
 
-    #9. Building a personalised colormap the mixture faction
+    #4.4 BUILDING A PERSONALISED COLORMAP
     from matplotlib import pyplot as plt
     import matplotlib.colors as mcolors 
 
@@ -741,8 +750,8 @@ for t in range(0,Nt):
 
         #Image resolution definations
         dpi = 100
-        width_inches =1366/dpi
-        height_inches =673/dpi
+        width_inches =1180/dpi
+        height_inches =580/dpi
         plt.figure(figsize=(width_inches,height_inches),dpi=dpi)
         plt.clf()
 
@@ -756,17 +765,17 @@ for t in range(0,Nt):
         cbarT.set_ticklabels(labels)        
         plt.xticks([0.0, Lx])                 
         plt.yticks([0.0, Ly])
-        plt.title('Distribuição de Temperatura')
+        plt.title('Temperature distribution')
 
         plt.subplot(1, 2, 2)                #MIXTURE FRACTION
         plt.imshow(Ymist, cmap=custom_cmapf, extent=[0, Lx, 0, Ly], vmin=Ymist_min, vmax=Ymist_max)
         plt.colorbar(label='')
         plt.xticks([0.0, Lx])              
         plt.yticks([0.0, Ly])
-        plt.title('Distribuição da Mist. Ar-Combustível')
+        plt.title('Air-fuel mixture distribution')
 
         # show time steps on screen
-        plt.suptitle(f"Passo de tempo: {t}")
+        plt.suptitle(f"Time step: {t}")
 
 
     else: 
@@ -805,8 +814,8 @@ for t in range(0,Nt):
 
         #Image resolution definations
         dpi = 100
-        width_inches =1366/dpi
-        height_inches =673/dpi
+        width_inches =1180/dpi
+        height_inches =580/dpi
         plt.figure(figsize=(width_inches,height_inches),dpi=dpi)
         plt.clf()
 
@@ -820,24 +829,30 @@ for t in range(0,Nt):
         cbarT.set_ticklabels(labels)        
         plt.xticks([0.0, Lx])               
         plt.yticks([0.0, Ly])
-        plt.title('Distribuição de Temperatura')
+        plt.title('Temperature distribution')
 
         plt.subplot(1, 2, 2)                #MIXTURE FRACTION
         plt.imshow(Ymist, cmap=custom_cmapf, extent=[0, Lx, 0, Ly], vmin=Ymist_min, vmax=Ymist_max)
         plt.colorbar(label='')
         plt.xticks([0.0, Lx])              
         plt.yticks([0.0, Ly])
-        plt.title('Distribuição da Mist. Ar-Combustível')
+        plt.title('Air-fuel mixture distributio')
 
         # show time step on screen
-        plt.suptitle(f"Passo de tempo: {step}")
-    import os
+        plt.suptitle(f"Time step: {step}")
+
+
+    #4.6 DISPAYING AND STORING IMAGES (To further use)
     if t%5==0 or t in [324,325, 326, 327, 328]:
-        os.makedirs(f"imagens_da_simulacaoVLCTF",exist_ok=True)
-        plt.savefig(f"imagens_da_simulacaoVLCTF/simulation_step_{step:04d}.png",dpi=150,bbox_inches='tight')
-    plt.close()
-    #clean space (if necessary)
-    import gc
+        os.makedirs(f"Simulation3_images",exist_ok=True)
+        plt.savefig(f"Simulation3_images/simulation_step_{step:04d}.png",dpi=150,bbox_inches='tight')
+        plt.pause(5)
+        plt.close()
+        plt.show()
+    plt.close()  
+
+    #4.7 CLEANING MEMORY
+    #clean RAM space to each 50th time step (if necessary)
     if t%50==0:
         gc.collect()
     if step >0:
@@ -845,14 +860,13 @@ for t in range(0,Nt):
         del M_f
         del A_O
         del M_O
-    #plt.pause(0.0001)
 
-# Salvando os dados em CSV
-np.savetxt("dados_simulacaoVLCTF.csv",
+
+# 5 SAVE THE T, Yf AND Yo DATA ARRAYS AS CSV (for further analysis)
+np.savetxt("simulation3_data.csv",
         np.column_stack([time_steps, T_mean_list, Yf_mean_list, YO_mean_list, Ymist_mean_ignition_list]),
         delimiter=",",
-        header="Tempo,T_mean,Yf_mean,YO_mean,Ymist_mean_ignition",
+        header="Time,T_mean,Yf_mean,YO_mean,Ymist_mean_ignition",
         comments='')
 
-np.savez("dados_simulacaoVLCTF.npz", Yf_list=Yfs, YO_list=YOs, T_list=Ts,Ymist_list=Ymists)
-#plt.show()
+np.savez("simulacao3_data.npz", Yf_list=Yfs, YO_list=YOs, T_list=Ts,Ymist_list=Ymists)
