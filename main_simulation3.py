@@ -4,7 +4,7 @@
 Script to simulate the combustion Process in a combustion chamber of a jet engine (assumptions a made) 
 The main goal is to ilustrate the temperature and air-fuel injection and consumption variations
 
-Simulation2
+Simulation3
 """
 
 import numpy as np
@@ -870,3 +870,4 @@ np.savetxt("simulation3_data.csv",
         comments='')
 
 np.savez("simulacao3_data.npz", Yf_list=Yfs, YO_list=YOs, T_list=Ts,Ymist_list=Ymists)
+
