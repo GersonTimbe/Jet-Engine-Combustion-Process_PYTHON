@@ -8,7 +8,6 @@ Simulation3
 """
 
 import numpy as np
-import numpy as np
 import scipy
 import matplotlib
 import os
@@ -870,4 +869,5 @@ np.savetxt("simulation3_data.csv",
         comments='')
 
 np.savez("simulacao3_data.npz", Yf_list=Yfs, YO_list=YOs, T_list=Ts,Ymist_list=Ymists)
+
 
