@@ -31,38 +31,38 @@ x, y = np.meshgrid(x, y)
 
 #II. PARAMETERS
 #Fluid Mechanics PARAMETERS ajusted to avoid instabilities: more accurate parameters demand a longer simulation time (more than 20h in a normal computer)
-rho  = 1              
-Cp   = 1000    
-kT   = 2000    
-alpha = kT/(rho*Cp)                 #diffusity
+rho  = 1                            # density of the mixture
+Cp   = 1000                         # specific heat capacity
+kT   = 2000                         # thermal conductivity (ajusted)
+alpha = kT/(rho*Cp)                 # thermal diffusity
 
 #Constant Velocity field
-u_x = 15       
+u_x = 15                            # Maximum Avarage velocity (ajusted)
 u_y = 0.0     
 
 # Parameters for species transport:  Fuel C10H22(n-decane) and O_2
-MW_fuel = 0.142                     # fuel molar weight
-MW_O2   = 0.032                     # oxidizer molar weight
-S_ratio = 15.5*(MW_O2/MW_fuel)      # equivalence ratio
-Phi     = 1            
-Ae      = 10**8                   #|parameters of th erenhius model
-E_a     = 147000                  #|    
-R       = 8.314                   #| 
-Delta_H =-6345000                 # combustion entalphy 
-D_fuelx = 2                       #|Diffusion constants
+MW_fuel = 0.142                     # fuel molar weight (kg/mol)
+MW_O2   = 0.032                     # oxidizer molar weight (kg/mol)
+S_ratio = 15.5*(MW_O2/MW_fuel)      # stoichiometric ratio
+Phi     = 1                         # equivalent raio
+Ae      = 10**8                   # pre-exponential factor for reaction rate
+E_a     = 147000                  # activation energy (J/mol)    
+R       = 8.314                   # universal gas constant (J/mol·K)
+Delta_H =-6345000                 # heat of combustion (J/mol) 
+D_fuelx = 2                       #| Diffusion coefficients
 D_Ox    = 2                       #|
 D_fuely = 1                       #|
-D_Oy =1                           #|
-K       = np.zeros((Ny, Nx))  
+D_Oy    = 1                           #|
+K       = np.zeros((Ny, Nx))      # reaction constant (updated later) 
 
 
 # Parameters for Initial and Boundries conditions (Heat Transfer) (simplified notations) 
-he = 10**4  
-hi = 10**6                                       
-hd = 200                                        
-hs = 10**6                              
-Te = 800   
-Tenv = 320                         #Temperature of the environment
+he = 10**4                        # convective heat transfer coefficient (Left)
+hi = 10**6                        # (Bottom)                      
+hd = 200                          # (Right)                  
+hs = 10**6                        # (Upper)         
+Te = 800                          # temperature of the left side of thr chamber 
+Tenv = 320                        # temperature of the external environment
 
 #auxiliaries
 Ce = 1+(he/kT)*delta_x
@@ -73,8 +73,8 @@ Ke = ((he/kT)*delta_x*Tenv)/Ce
 Ks = ((hs/kT)*delta_y*Tenv)/Cs
 Kd = ((hd/kT)*delta_x*Tenv)/Cd
 Ki = ((hi/kT)*delta_y*Tenv)/Ci
-mfr_fuel = 82/7                    
-mfr_O = (1/Phi)*S_ratio*mfr_fuel 
+mfr_fuel = 82/7                      # mass flow rate to the fuel (kg/m2*s - constant VF)             
+mfr_O = (1/Phi)*S_ratio*mfr_fuel     # mass flow rate to the oxidizer (kg/m2*s)
 
 
 #1. CONSTRUCT THE MATRICES OF THE SYSTEM OF EQUATIONS.
@@ -869,6 +869,7 @@ np.savetxt("simulation2_data.csv",
         comments='')
 
 np.savez("simulation2_data.npz", Yf_list=Yfs, YO_list=YOs, T_list=Ts,Ymist_list=Ymists)
+
 
 
 
