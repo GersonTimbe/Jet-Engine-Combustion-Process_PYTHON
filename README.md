@@ -11,8 +11,8 @@ This project simulates the combustion process in a combustion chamber of a Jet-e
 **Applications:** Thermal behavior and Air-Fuel Mixture consumption in jet engines (TCC - Undergraduate Thesis-Applied Mathematics)
 
 **Codes:**\
-**Code 1:**
-*Ideal Chamber -** Generates the chamber used to do the simulations, that is an approximation of the real one.
+**Code 1:** *Ideal Chamber**
+Generates the chamber used to do the simulations, that is an approximation of the real one.
 This retangular chamber was needed to make it possible to apply the numerical method used. 
 
 **Code 2:**
