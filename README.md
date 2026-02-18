@@ -4,8 +4,8 @@ This project simulates the combustion process in a combustion chamber of a Jet-e
 </p>
 
 **Goal:** Solve the 2D coupled system of partial diferential equations (mass, energy and species conservation equations) to describe temperature and chemical species variations during the injection and combustion process. 
-<p align ="justify">
-**Keywords:** Computational Simulation, Python Programming, Numerical Methods, Finite Differences,  Mathematical Modeling, Chemical Kinetics, Heat Transfer, Combustion Chamber, Jet Engine.
+
+**Keywords:** <p align ="justify"> Computational Simulation, Python Programming, Numerical Methods, Finite Differences,  Mathematical Modeling, Chemical Kinetics, Heat Transfer, Combustion Chamber, Jet Engine.
 </p>
    
 **Language:** Python  
