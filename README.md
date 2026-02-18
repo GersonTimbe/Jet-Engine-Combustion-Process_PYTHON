@@ -1,6 +1,6 @@
 # Jet-Engine-Combustion-Process-Simulation (PYTHON) 
 <p align ="justify>"
-This project simulates the combustion process in a combustion chamber of a Jet-engine using conservation laws, chemical kinetics and the Crank-Nicolson numerical method.
+This project simulates the combustion process in a combustion chamber of a Jet-engine using conservation laws, chemical kinetics and the Crank-Nicolson numerical method.</p>
 
 **Goal:** Solve the 2D coupled system of partial diferential equations (mass, energy and species conservation equations) to describe temperature and chemical species variations during the injection and combustion process. 
 
@@ -32,4 +32,4 @@ Este projeto faz parte do meu Trabalho de Conclusão de Curso (Matemática Aplic
 
 
 Objectivo: Resolver o sistema acoplado de equações diferencias parciais (equação de conservação da massa, energia e de espécies químicas) para descrever a variação térmica e de espécies químicas na câmara durante a injeccao e durante o processo de combustão.
-</p>
+
