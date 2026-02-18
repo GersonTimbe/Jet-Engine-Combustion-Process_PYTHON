@@ -3,8 +3,8 @@
 This project simulates the combustion process in a combustion chamber of a Jet-engine using conservation laws, chemical kinetics and the Crank-Nicolson numerical method.</p>
 
 **Goal:** Solve the 2D coupled system of partial diferential equations (mass, energy and species conservation equations) to describe temperature and chemical species variations during the injection and combustion process. 
-
-**Keywords:** Computational Simulation, Python Programming, Numerical Methods, Finite Differences,  Mathematical Modeling, Chemical Kinetics, Heat Transfer, Combustion Chamber, Jet Engine.
+<p align ="justify>"
+**Keywords:** Computational Simulation, Python Programming, Numerical Methods, Finite Differences,  Mathematical Modeling, Chemical Kinetics, Heat Transfer, Combustion Chamber, Jet Engine.</p>
    
 **Language:** Python  
 **Main Libraries:** NumPy, Scipy, Matplotlib, os  
@@ -22,7 +22,8 @@ Generates the two meshes used to do the partition of the domain and discretize t
 Generates a visualization of the created variable velocity field $**v**=(v(x,y),u(x,y))$ used in simulation 3.
 
 **Code 4:** *Simulation 2 -*\
-Generates the **Second Final Result of the Research**: How temperature and air-fuel mixture varies in the combustion chamber during  injection and during the combustion process. The code produces and store images of the simulation to a folder named "simulation2" and displays it on the screen to each 5th time step. These images were then used to produce the video of the simulation. In this code was used a constant velocity fiel. 
+<p align ="justify>" 
+Generates the **Second Final Result of the Research**: How temperature and air-fuel mixture varies in the combustion chamber during  injection and during the combustion process. The code produces and store images of the simulation to a folder named "simulation2" and displays it on the screen to each 5th time step. These images were then used to produce the video of the simulation. In this code was used a constant velocity fiel. </p>
 
 **Code 5:** *Simulation 3 -* \
 Generates the **Third Final Result of the Research**: How temperature and air-fuel mixture varies in the combustion chamber during  injection and during the combustion process, now using the *modeled velocity field*, that is more realistic to allow comparisons.
