@@ -13,11 +13,11 @@ This project simulates a combustion process in a combustion chamber of a Jet-eng
 **Applications:** <p align ="justify"> Thermal behavior and Air-Fuel Mixture consumption in jet engines (TCC - Undergraduate Thesis-Applied Mathematics)</p>
 
 **Codes:**\
-**Code 1:** *Ideal Chamber*\
+**Code 1:** *Ideal Chamber*
 <p align ="justify"> Generates the chamber used to do the simulations, that is an approximation of the real one.
 This retangular chamber was needed to make it possible to apply the numerical method used. </p>
 
-**Code 2:** *Numerical Meshes*\
+**Code 2:** *Numerical Meshes*
 Generates the two meshes used to do the partition of the domain and discretize the equations.
 
 **Code 3:** *Modeled Velocity Field*\
