@@ -18,7 +18,7 @@ This retangular chamber was needed to make it possible to apply the numerical me
 Generates the two meshes used to do the partition of the domain and discretize the equations.
 
 **Code 3:** *Modeled Velocity Field* \
-Generates a visualization of the created variable velocity field $**v**=(v(x,y),u(x,y))$ used in simulation 3
+Generates a visualization of the created variable velocity field $\mathbf{v}=(v(x,y),u(x,y))$ used in simulation 3
 .<p align ="justify"> **Code 4:** *Simulation 2* \
 Generates the **Second Final Result of the Research**: How temperature and air-fuel mixture varies in the combustion chamber during  injection and during the combustion process. The code produces and store images of the simulation to a folder named "simulation2" and displays it on the screen to each 5th time step. These images were then used to produce the video of the simulation. In this code was used a constant velocity fiel
 .<p align ="justify">**Code 5:** *Simulation 3* \
