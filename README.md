@@ -24,9 +24,4 @@ Generates the **Second Final Result of the Research**: How temperature and air-f
 .<p align ="justify">**Code 5:** *Simulation 3* \
 Generates the **Third Final Result of the Research**: How temperature and air-fuel mixture varies in the combustion chamber during  injection and during the combustion process, now using the *modeled velocity field*, that is more realistic to allow comparisons.</p>
  
-## Summary in Portuguese
-Este projeto faz parte do meu Trabalho de Conclusão de Curso (Matemática Aplicada) e simula o processo de combustão em uma câmara de combustão ideal de um Motor a jacto usando leis de conservação, cinética química e o método numérico de Crank-Nicolson. 
-
-
-Objectivo: Resolver o sistema acoplado de equações diferencias parciais (equação de conservação da massa, energia e de espécies químicas) para descrever a variação térmica e de espécies químicas na câmara durante a injeccao e durante o processo de combustão.
 
