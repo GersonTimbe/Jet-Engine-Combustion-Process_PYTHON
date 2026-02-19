@@ -14,7 +14,7 @@ This project simulates a combustion process in a combustion chamber of a Jet-eng
 
 **Codes:**\
 **Code 1:** *Ideal Chamber* \
- Generates <p align ="justify"> the chamber used to do the simulations, that is an approximation of the real one.
+ Generates the chamber used to do the simulations, that is an approximation of the real one.
 This retangular chamber was needed to make it possible to apply the numerical method used. </p>
 
 **Code 2:** *Numerical Meshes*
