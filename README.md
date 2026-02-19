@@ -12,10 +12,11 @@ This project simulates a combustion process in a combustion chamber of a Jet-eng
 **Codes:**\
 **Code 1:** *Ideal Chamber* \
  Generates the chamber used to do the simulations, that is an approximation of the real one.
-This rectangular chamber was needed to make it possible to apply the numerical method used. (see the result in </p>
+This rectangular chamber was needed to make it possible to apply the numerical method used. </p>
 
 **Code 2:** *Numerical Meshes* \
 Generates the two meshes used to do the partition of the domain and discretize the equations.
+The results of these codes can be seen without running the codes inside the folder "results" above.
 
 **Code 3:** *Modeled Velocity Field* \
 Generates a visualization of the created variable velocity field $\mathbf{v}=(v(x,y),u(x,y))$ used in simulation 3
