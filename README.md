@@ -1,9 +1,8 @@
 # Jet-Engine-Combustion-Process-Simulation (PYTHON) 
 This project simulates a combustion process in a combustion chamber of a Jet-engine using conservation laws, chemical kinetics and the Crank-Nicolson numerical method.
 
-**Goal:** Solve the 2D coupled system of partial diferential equations (mass, energy and species conservation equations) to describe temperature and chemical species variations during the injection and combustion process.
-
-**Keywords:** <p align ="justify"> Computational Simulation, Python Programming, Numerical Methods, Finite Differences,  Mathematical Modeling, Chemical Kinetics, Heat Transfer, Combustion Chamber, Jet Engine.</p>
+**Goal:** Solve the 2D coupled system of partial diferential equations (mass, energy and species conservation equations) to describe temperature and chemical species variations during the injection and combustion process
+.<p align ="justify"> **Keywords:** Computational Simulation, Python Programming, Numerical Methods, Finite Differences,  Mathematical Modeling, Chemical Kinetics, Heat Transfer, Combustion Chamber, Jet Engine.
 </p>
    
 **Language:** Python  
