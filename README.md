@@ -5,9 +5,9 @@ This project simulates a combustion process in a combustion chamber of a Jet-eng
 .<p align ="justify"> **Keywords:** Computational Simulation, Python Programming, Numerical Methods, Finite Differences,  Mathematical Modeling, Chemical Kinetics, Heat Transfer, Combustion Chamber, Jet Engine.
 </p>
    
-**Language:** Python  
+**Language:** Python; 
 **Main Libraries:** NumPy, Scipy, Matplotlib, os  
-**Applications:** <p align ="justify"> Thermal behavior and Air-Fuel Mixture consumption in jet engines (TCC - Undergraduate Thesis-Applied Mathematics)</p>
+;<p align ="justify"> **Applications:** Thermal behavior and Air-Fuel Mixture consumption in jet engines (TCC - Undergraduate Thesis-Applied Mathematics)</p>
 
 **Codes:**\
 **Code 1:** *Ideal Chamber* \
