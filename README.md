@@ -12,7 +12,7 @@ This project simulates a combustion process in a combustion chamber of a Jet-eng
 **Codes:**\
 **Code 1:** *Ideal Chamber* \
  Generates the chamber used to do the simulations, that is an approximation of the real one.
-This retangular chamber was needed to make it possible to apply the numerical method used. </p>
+This rectangular chamber was needed to make it possible to apply the numerical method used. (see the result in </p>
 
 **Code 2:** *Numerical Meshes* \
 Generates the two meshes used to do the partition of the domain and discretize the equations.
@@ -20,8 +20,8 @@ Generates the two meshes used to do the partition of the domain and discretize t
 **Code 3:** *Modeled Velocity Field* \
 Generates a visualization of the created variable velocity field $\mathbf{v}=(v(x,y),u(x,y))$ used in simulation 3
 .<p align ="justify"> **Code 4:** *Simulation 2* \
-Generates the **Second Final Result of the Research**: How temperature and air-fuel mixture varies in the combustion chamber during  injection and during the combustion process. The code produces and store images of the simulation to a folder named "simulation2" and displays it on the screen to each 5th time step. These images were then used to produce the video of the simulation. In this code was used a constant velocity fiel
+Generates the **Second Final Result of the Research**: How temperature and air-fuel mixture varies in the combustion chamber during  injection and during the combustion process. When the code is run it produces and store in the computer images of the simulation in a folder named "simulation2" and displays it on the screen to each 5th time step. These images were then used to produce the video of the simulation, named "simulation2(download to play).mp4" , (see the "result" folder above) , and need to be downloaded to be played as it is around 1.5mb, (heavy to github). In this code was used a constant velocity field
 .<p align ="justify">**Code 5:** *Simulation 3* \
-Generates the **Third Final Result of the Research**: How temperature and air-fuel mixture varies in the combustion chamber during  injection and during the combustion process, now using the *modeled velocity field*, that is more realistic to allow comparisons between the simulations and check the stability of the solutions.</p>
+Generates the **Third Final Result of the Research**: How temperature and air-fuel mixture varies in the combustion chamber during  injection and during the combustion process, now using the *modeled velocity field*, that is more realistic to allow comparisons between the simulations and check the stability of the solutions. The video of the simulation also can be downloaded in the "result" folder above, named "simulation3(download to play).mp4" </p>
  
 
