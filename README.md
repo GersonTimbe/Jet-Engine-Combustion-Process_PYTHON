@@ -22,6 +22,6 @@ Generates a visualization of the created variable velocity field $\mathbf{v}=(v(
 .<p align ="justify"> **Code 4:** *Simulation 2* \
 Generates the **Second Final Result of the Research**: How temperature and air-fuel mixture varies in the combustion chamber during  injection and during the combustion process. The code produces and store images of the simulation to a folder named "simulation2" and displays it on the screen to each 5th time step. These images were then used to produce the video of the simulation. In this code was used a constant velocity fiel
 .<p align ="justify">**Code 5:** *Simulation 3* \
-Generates the **Third Final Result of the Research**: How temperature and air-fuel mixture varies in the combustion chamber during  injection and during the combustion process, now using the *modeled velocity field*, that is more realistic to allow comparisons.</p>
+Generates the **Third Final Result of the Research**: How temperature and air-fuel mixture varies in the combustion chamber during  injection and during the combustion process, now using the *modeled velocity field*, that is more realistic to allow comparisons between the simulations and check the stability of the solutions.</p>
  
 
