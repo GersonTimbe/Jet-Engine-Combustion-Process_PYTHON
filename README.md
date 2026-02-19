@@ -16,7 +16,7 @@ This rectangular chamber was needed to make it possible to apply the numerical m
 
 **Code 2:** *Numerical Meshes* \
 Generates the two meshes used to do the partition of the domain and discretize the equations.
-The results of these codes can be seen without running the them inside the folder "results" above.
+The results of these codes can be seen without running them inside the folder "results" above.
 
 **Code 3:** *Modeled Velocity Field* \
 Generates a visualization of the created variable velocity field $\mathbf{v}=(v(x,y),u(x,y))$ used in simulation 3
